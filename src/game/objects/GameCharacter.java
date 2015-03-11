@@ -24,8 +24,8 @@ public class GameCharacter extends GameObject implements GLEventListener {
 	
 	// Texture
 	private Texture texture;
-	private String textureFileName = "textures/envoirment/ground/grass.jpg";
-	private String textureFileType = ".jpg";
+	private String textureFileName = "textures/characters/test1.png";
+	private String textureFileType = ".png";
 	
 	// Texture image flips vertically. Shall use TextureCoords class to retrieve the
 	// top, bottom, left and right coordinates.
@@ -46,30 +46,36 @@ public class GameCharacter extends GameObject implements GLEventListener {
 	public void display(GLAutoDrawable drawable) {
 		GL2 gl = drawable.getGL().getGL2();  // get the OpenGL 2 graphics context
 	      gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
-
+	      gl.glEnable(GL_BLEND);
+	      gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	      
+	      
 	      // ------ Render a Cube with texture ------
 	      gl.glLoadIdentity();  // reset the model-view matrix
-	      gl.glTranslatef(0.0f, 0.0f, -5.0f); // translate into the screen
+	      gl.glTranslatef(0.0f, 0.0f, -20.0f); // translate into the screen
 
+	      
+	      
 	      // Enables this texture's target in the current GL context's state.
 	      texture.enable(gl);  // same as gl.glEnable(texture.getTarget());
-	      // gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_REPLACE);
+	      //gl.glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	      // Binds this texture to the current GL context.
 	      texture.bind(gl);  // same as gl.glBindTexture(texture.getTarget(), texture.getTextureObject());
 	 
+	      
+	      
 	      gl.glBegin(GL_QUADS);
 
 	      gl.glTexCoord2f(textureLeft, textureBottom);
-	      gl.glVertex3f(-1.0f, -1.0f, 0.0f); // bottom-left of the texture and quad
+	      gl.glVertex3f(-0.5f, -1.0f, 0.0f); // bottom-left of the texture and quad
 	      gl.glTexCoord2f(textureRight, textureBottom);
-	      gl.glVertex3f(1.0f, -1.0f, 0.0f);  // bottom-right of the texture and quad
+	      gl.glVertex3f(0.5f, -1.0f, 0.0f);  // bottom-right of the texture and quad
 	      gl.glTexCoord2f(textureRight, textureTop);
-	      gl.glVertex3f(1.0f, 1.0f, 0.0f);   // top-right of the texture and quad
+	      gl.glVertex3f(0.5f, 1.0f, 0.0f);   // top-right of the texture and quad
 	      gl.glTexCoord2f(textureLeft, textureTop);
-	      gl.glVertex3f(-1.0f, 1.0f, 0.0f);  // top-left of the texture and quad
-
+	      gl.glVertex3f(-0.5f, 1.0f, 0.0f);  // top-left of the texture and quad
+	      
 	      gl.glEnd();
-		
 	}
 
 	@Override
@@ -80,9 +86,8 @@ public class GameCharacter extends GameObject implements GLEventListener {
 
 	@Override
 	public void init(GLAutoDrawable drawable) {
+			GL2 gl = drawable.getGL().getGL2();      // get the OpenGL graphics context
 
-		GL2 gl = drawable.getGL().getGL2();      // get the OpenGL graphics context
-/*
 	      //glu = new GLU();                         // get GL Utilities
 	      gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // set background (clear) color
 	      gl.glClearDepth(1.0f);      // set clear depth value to farthest
@@ -90,8 +95,7 @@ public class GameCharacter extends GameObject implements GLEventListener {
 	      gl.glDepthFunc(GL_LEQUAL);  // the type of depth test to do
 	      gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); // best perspective correction
 	      gl.glShadeModel(GL_SMOOTH); // blends colors nicely, and smoothes out lighting
-
-*/
+	      gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE); 
 
 	      // Load texture from image
 	      try {
@@ -118,16 +122,16 @@ public class GameCharacter extends GameObject implements GLEventListener {
 	      } catch (IOException e) {
 	         e.printStackTrace();
 	      }
-		
 	}
 
 	@Override
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width,
 			int height) {
 		GL2 gl = drawable.getGL().getGL2();  // get the OpenGL 2 graphics context
+		GLU glu = new GLU();
 
 	      if (height == 0) height = 1;   // prevent divide by zero
-	      float aspect = (float)width / height;
+	      double aspect = (double)width / height;
 
 	      // Set the view port (display area) to cover the entire window
 	      gl.glViewport(0, 0, width, height);
@@ -135,13 +139,11 @@ public class GameCharacter extends GameObject implements GLEventListener {
 	      // Setup perspective projection, with aspect ratio matches viewport
 	      gl.glMatrixMode(GL_PROJECTION);  // choose projection matrix
 	      gl.glLoadIdentity();             // reset projection matrix
-	      //GLU.gluPerspective(45.0, aspect, 0.1, 100.0); // fovy, aspect, zNear, zFar
+	      glu.gluPerspective(45.0, aspect, 0.1, 100.0); // fovy, aspect, zNear, zFar
 
 	      // Enable the model-view transform
 	      gl.glMatrixMode(GL_MODELVIEW);
 	      gl.glLoadIdentity(); // reset
 		
 	}
-
-
 }

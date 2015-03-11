@@ -1,6 +1,8 @@
 package ak_1_g;
 
+import game.objects.GameCharacter;
 import game.objects.GameDataHandler;
+import game.objects.GameScene;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -25,6 +27,8 @@ public class GameMain extends GLCanvas implements GLEventListener {
 	   private static final int FPS = 60; // animator's target frames per second
 	   
 	   GameDataHandler gameDataHandler;
+	   GameScene test1;
+	   GameCharacter testChar1;
 	   
 	 
 	   /** The entry main() method to setup the top-level container and animator */
@@ -71,7 +75,13 @@ public class GameMain extends GLCanvas implements GLEventListener {
 	 
 	   /** Constructor to setup the GUI for this Component */
 	   public GameMain() {
+		  gameDataHandler = new GameDataHandler();
+		  test1 = new GameScene();
+		  testChar1 = new GameCharacter(gameDataHandler.getRandomFirstName(), gameDataHandler.getRandomLastName());
+		   
 	      this.addGLEventListener(this);
+	      this.addGLEventListener(test1);
+	      this.addGLEventListener(testChar1);
 	   }
 	 
 	   // ------ Implement methods declared in GLEventListener ------
