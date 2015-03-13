@@ -17,7 +17,8 @@ import com.jogamp.opengl.util.texture.TextureCoords;
 import com.jogamp.opengl.util.texture.TextureIO;
 
 public class GameCharacter extends GameObject implements GLEventListener {
-	//stats;
+	float posX, posY, posZ;
+	int statStrenght, statDexterity, statIntelligence;
 	//relations;
 	//equipment;
 	//group;
@@ -31,8 +32,11 @@ public class GameCharacter extends GameObject implements GLEventListener {
 	// top, bottom, left and right coordinates.
 	private float textureTop, textureBottom, textureLeft, textureRight;
 	
-	public GameCharacter (String _firstName, String _lastName) {
+	public GameCharacter (String _firstName, String _lastName, float _posX, float _posY, float _posZ) {
 		this.name = _firstName + " " + _lastName;
+		this.posX = _posX;
+		this.posY = _posY;
+		this.posZ = _posZ;
 	}
 	
 	public void move (Dimension where) {}
@@ -44,106 +48,104 @@ public class GameCharacter extends GameObject implements GLEventListener {
 
 	@Override
 	public void display(GLAutoDrawable drawable) {
+		System.out.println("GC_Disp_BEGIN");
 		GL2 gl = drawable.getGL().getGL2();  // get the OpenGL 2 graphics context
-	      gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
-	      gl.glEnable(GL_BLEND);
-	      gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	      
-	      
-	      // ------ Render a Cube with texture ------
-	      gl.glLoadIdentity();  // reset the model-view matrix
-	      gl.glTranslatef(0.0f, 0.0f, -20.0f); // translate into the screen
+//		gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color and depth buffers  
+		
+		// ------ Render a Cube with texture ------
 
+	    gl.glLoadIdentity();  // reset the model-view matrix
+		gl.glTranslatef(0.0f, 0.0f, -5.0f); // translate into the screen
+		
+		gl.glEnable(GL_BLEND);
+		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		gl.glEnable(GL_ALPHA_TEST);
+		gl.glAlphaFunc(GL_GREATER, 0.0f);
 	      
+		// Enables this texture's target in the current GL context's state.
+		texture.enable(gl);  // same as gl.glEnable(texture.getTarget());
+		//gl.glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+		// Binds this texture to the current GL context.
+		texture.bind(gl);  // same as gl.glBindTexture(texture.getTarget(), texture.getTextureObject());
 	      
-	      // Enables this texture's target in the current GL context's state.
-	      texture.enable(gl);  // same as gl.glEnable(texture.getTarget());
-	      //gl.glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-	      // Binds this texture to the current GL context.
-	      texture.bind(gl);  // same as gl.glBindTexture(texture.getTarget(), texture.getTextureObject());
-	 
-	      
-	      
-	      gl.glBegin(GL_QUADS);
+		gl.glBegin(GL_QUADS);
 
-	      gl.glTexCoord2f(textureLeft, textureBottom);
-	      gl.glVertex3f(-0.5f, -1.0f, 0.0f); // bottom-left of the texture and quad
-	      gl.glTexCoord2f(textureRight, textureBottom);
-	      gl.glVertex3f(0.5f, -1.0f, 0.0f);  // bottom-right of the texture and quad
-	      gl.glTexCoord2f(textureRight, textureTop);
-	      gl.glVertex3f(0.5f, 1.0f, 0.0f);   // top-right of the texture and quad
-	      gl.glTexCoord2f(textureLeft, textureTop);
-	      gl.glVertex3f(-0.5f, 1.0f, 0.0f);  // top-left of the texture and quad
-	      
-	      gl.glEnd();
+		gl.glTexCoord2f(textureLeft, textureBottom);
+		gl.glVertex3f(-0.5f, -1.0f, 0.0f); // bottom-left of the texture and quad
+		gl.glTexCoord2f(textureRight, textureBottom);
+		gl.glVertex3f(0.5f, -1.0f, 0.0f);  // bottom-right of the texture and quad
+		gl.glTexCoord2f(textureRight, textureTop);
+		gl.glVertex3f(0.5f, 1.0f, 0.0f);   // top-right of the texture and quad
+		gl.glTexCoord2f(textureLeft, textureTop);
+		gl.glVertex3f(-0.5f, 1.0f, 0.0f);  // top-left of the texture and quad
+		gl.glEnd();
+		gl.glDisable(GL_ALPHA_TEST);
+		
+		System.out.println("GC_Disp_END");
 	}
 
 	@Override
 	public void dispose(GLAutoDrawable drawable) {
-		// TODO Auto-generated method stub
+		System.out.println("GC_Del_BEGIN");
 		
+		System.out.println("GC_Del_END");
 	}
 
 	@Override
 	public void init(GLAutoDrawable drawable) {
-			GL2 gl = drawable.getGL().getGL2();      // get the OpenGL graphics context
+		System.out.println("GC_Init_BEGIN");
+		GL2 gl = drawable.getGL().getGL2();      // get the OpenGL graphics context
+	    //glu = new GLU();                         // get GL Utilities
+	    
+	    // Load texture from image
+	    try {
+	    	// Create a OpenGL Texture object from (URL, mipmap, file suffix)
+	    	// Use URL so that can read from JAR and disk file.
+	    	texture = TextureIO.newTexture(
+	    			getClass().getClassLoader().getResource(textureFileName), // relative to project root 
+	    			false, textureFileType);
 
-	      //glu = new GLU();                         // get GL Utilities
-	      gl.glClearColor(0.0f, 0.0f, 0.0f, 0.0f); // set background (clear) color
-	      gl.glClearDepth(1.0f);      // set clear depth value to farthest
-	      gl.glEnable(GL_DEPTH_TEST); // enables depth testing
-	      gl.glDepthFunc(GL_LEQUAL);  // the type of depth test to do
-	      gl.glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST); // best perspective correction
-	      gl.glShadeModel(GL_SMOOTH); // blends colors nicely, and smoothes out lighting
-	      gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE); 
+	    	// Use linear filter for texture if image is larger than the original texture
+	    	gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	    	// Use linear filter for texture if image is smaller than the original texture
+	    	gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-	      // Load texture from image
-	      try {
-	         // Create a OpenGL Texture object from (URL, mipmap, file suffix)
-	         // Use URL so that can read from JAR and disk file.
-	         texture = TextureIO.newTexture(
-	               getClass().getClassLoader().getResource(textureFileName), // relative to project root 
-	               false, textureFileType);
-
-	         // Use linear filter for texture if image is larger than the original texture
-	         gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	         // Use linear filter for texture if image is smaller than the original texture
-	         gl.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-	         // Texture image flips vertically. Shall use TextureCoords class to retrieve
-	         // the top, bottom, left and right coordinates, instead of using 0.0f and 1.0f.
-	         TextureCoords textureCoords = texture.getImageTexCoords();
-	         textureTop = textureCoords.top();
-	         textureBottom = textureCoords.bottom();
-	         textureLeft = textureCoords.left();
-	         textureRight = textureCoords.right();
-	      } catch (GLException e) {
-	         e.printStackTrace();
-	      } catch (IOException e) {
-	         e.printStackTrace();
-	      }
+	    	// Texture image flips vertically. Shall use TextureCoords class to retrieve
+	    	// the top, bottom, left and right coordinates, instead of using 0.0f and 1.0f.
+	    	TextureCoords textureCoords = texture.getImageTexCoords();
+	    	textureTop = textureCoords.top();
+	    	textureBottom = textureCoords.bottom();
+	    	textureLeft = textureCoords.left();
+	    	textureRight = textureCoords.right();
+	    } catch (GLException e) {
+	    	e.printStackTrace();
+	    } catch (IOException e) {
+	    	e.printStackTrace();
+	    }
+	    System.out.println("GC_Init_END");
 	}
 
 	@Override
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width,
 			int height) {
+		System.out.println("GC_Resh_BEGIN");
 		GL2 gl = drawable.getGL().getGL2();  // get the OpenGL 2 graphics context
 		GLU glu = new GLU();
 
-	      if (height == 0) height = 1;   // prevent divide by zero
-	      double aspect = (double)width / height;
+		if (height == 0) height = 1;   // prevent divide by zero
+		double aspect = (double)width / height;
 
-	      // Set the view port (display area) to cover the entire window
-	      gl.glViewport(0, 0, width, height);
+		// Set the view port (display area) to cover the entire window
+		gl.glViewport(0, 0, width, height);
 
-	      // Setup perspective projection, with aspect ratio matches viewport
-	      gl.glMatrixMode(GL_PROJECTION);  // choose projection matrix
-	      gl.glLoadIdentity();             // reset projection matrix
-	      glu.gluPerspective(45.0, aspect, 0.1, 100.0); // fovy, aspect, zNear, zFar
+		// Setup perspective projection, with aspect ratio matches viewport
+		gl.glMatrixMode(GL_PROJECTION);  // choose projection matrix
+		gl.glLoadIdentity();             // reset projection matrix
+		glu.gluPerspective(45.0, aspect, 0.1, 100.0); // fovy, aspect, zNear, zFar
 
-	      // Enable the model-view transform
-	      gl.glMatrixMode(GL_MODELVIEW);
-	      gl.glLoadIdentity(); // reset
-		
+		// Enable the model-view transform
+		gl.glMatrixMode(GL_MODELVIEW);
+		gl.glLoadIdentity(); // reset
+		System.out.println("GC_Resh_END");
 	}
 }
