@@ -2,6 +2,7 @@ package game.objects;
 
 import static javax.media.opengl.GL.*;  // GL constants
 import static javax.media.opengl.GL2.*; // GL2 constants
+import static javax.media.opengl.GL2ES1.GL_ALPHA_TEST;
 
 import java.awt.Dimension;
 import java.io.IOException;
@@ -22,16 +23,16 @@ public class GameScene implements GLEventListener {
 	Dimension coods;
 	
 	private Texture skyTex;
-	private String skyTexFileName = "textures/envoirment/sky/sky.jpg";
-	private String skyTexFileType = ".jpg";
+	private String skyTexFileName = "textures/envoirment/background/bg.png";
+	private String skyTexFileType = ".png";
 	private float skyTexTop, skyTexBottom, skyTexLeft, skyTexRight;
 	
 	
 	//backgrounds[];
 	//backgroundProps;
 	private Texture groundTex;
-	private String groundTexFileName = "textures/envoirment/ground/grass.jpg";
-	private String groundTexFileType = ".jpg";
+	private String groundTexFileName = "textures/envoirment/ground/ground1.png";
+	private String groundTexFileType = ".png";
 	private float groundTexTop, groundTexBottom, groundTexLeft, groundTexRight;
 	
 	//props[];
@@ -47,8 +48,13 @@ public class GameScene implements GLEventListener {
 
 		// ------ Render a Cube with texture ------
 		gl.glLoadIdentity();  // reset the model-view matrix
-		gl.glTranslatef(0.0f, 0.5f, -6.0f); // translate into the screen
+		gl.glTranslatef(0.0f, 10.0f, -85.0f); // translate into the screen
 
+		gl.glEnable(GL_BLEND);
+		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		gl.glEnable(GL_ALPHA_TEST);
+		gl.glAlphaFunc(GL_GREATER, 0.0f);
+		
 		// Enables this texture's target in the current GL context's state.
 		skyTex.enable(gl);  // same as gl.glEnable(texture.getTarget());
 		gl.glTexEnvi(gl.GL_TEXTURE_ENV, gl.GL_TEXTURE_ENV_MODE, gl.GL_REPLACE);
@@ -58,19 +64,19 @@ public class GameScene implements GLEventListener {
 		gl.glBegin(GL_QUADS);
 
 		gl.glTexCoord2f(skyTexLeft, skyTexBottom);
-		gl.glVertex3f(-5.0f, -2.5f, 0.0f); // bottom-left of the texture and quad
+		gl.glVertex3f(-45.0f, -25.0f, 0.0f); // bottom-left of the texture and quad
 		gl.glTexCoord2f(skyTexRight, skyTexBottom);
-		gl.glVertex3f(5.0f, -2.5f, 0.0f);  // bottom-right of the texture and quad
+		gl.glVertex3f(45.0f, -25.0f, 0.0f);  // bottom-right of the texture and quad
 		gl.glTexCoord2f(skyTexRight, skyTexTop);
-		gl.glVertex3f(5.0f, 2.5f, 0.0f);   // top-right of the texture and quad
+		gl.glVertex3f(45.0f, 25.0f, 0.0f);   // top-right of the texture and quad
 		gl.glTexCoord2f(skyTexLeft, skyTexTop);
-		gl.glVertex3f(-5.0f, 2.5f, 0.0f);  // top-left of the texture and quad
+		gl.glVertex3f(-45.0f, 25.0f, 0.0f);  // top-left of the texture and quad
 
 		gl.glEnd();
 	    
 		gl.glLoadIdentity();  // reset the model-view matrix
-		gl.glTranslatef(0.0f, -1.0f, -5.0f); // translate into the screen
-		gl.glRotatef(85.0f, -1.0f, 0.0f, 0.0f); // rotate the object
+		gl.glTranslatef(0.0f, -15.0f, -60.0f); // translate into the screen
+		gl.glRotatef(90.0f, -1.0f, 0.0f, 0.0f); // rotate the object
 	      
 		// Enables this texture's target in the current GL context's state.
 		groundTex.enable(gl);  // same as gl.glEnable(texture.getTarget());
@@ -81,13 +87,13 @@ public class GameScene implements GLEventListener {
 		gl.glBegin(GL_QUADS);
 
 		gl.glTexCoord2f(groundTexLeft, groundTexBottom);
-		gl.glVertex3f(-2.0f, -1.0f, 0.0f); // bottom-left of the texture and quad
+		gl.glVertex3f(-45.0f, -25.0f, 0.0f); // bottom-left of the texture and quad
 		gl.glTexCoord2f(groundTexRight, groundTexBottom);
-		gl.glVertex3f(2.0f, -1.0f, 0.0f);  // bottom-right of the texture and quad
+		gl.glVertex3f(45.0f, -25.0f, 0.0f);  // bottom-right of the texture and quad
 		gl.glTexCoord2f(groundTexRight, groundTexTop);
-		gl.glVertex3f(2.0f, 1.0f, 0.0f);   // top-right of the texture and quad
+		gl.glVertex3f(45.0f, 25.0f, 0.0f);   // top-right of the texture and quad
 		gl.glTexCoord2f(groundTexLeft, groundTexTop);
-		gl.glVertex3f(-2.0f, 1.0f, 0.0f);  // top-left of the texture and quad
+		gl.glVertex3f(-45.0f, 25.0f, 0.0f);  // top-left of the texture and quad
 	      
 		gl.glEnd();
 		

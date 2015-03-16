@@ -2,9 +2,12 @@ package game.objects;
 
 import java.awt.Dimension;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static javax.media.opengl.GL.*;  // GL constants
 import static javax.media.opengl.GL2.*; // GL2 constants
+
+import com.jogamp.opengl.math.*;
 
 import javax.media.opengl.GL2;
 import javax.media.opengl.GLAutoDrawable;
@@ -17,11 +20,33 @@ import com.jogamp.opengl.util.texture.TextureCoords;
 import com.jogamp.opengl.util.texture.TextureIO;
 
 public class GameCharacter extends GameObject implements GLEventListener {
-	float posX, posY, posZ;
+	float[] destPos;
+	float[] currPos;
 	int statStrenght, statDexterity, statIntelligence;
 	//relations;
+	
 	//equipment;
-	//group;
+	//0 - helmet
+	//1 - torso
+	//2 - pants
+	//3 - hands
+	//4 - boots
+	//5[5] - items 
+	GameItem[] equipment;
+		
+	//stats
+	//0 - health;
+	//1 - strength;
+	//2 - agility;
+	//3 - dex;
+	//4 - constitution;
+	int[] stats;
+	
+	// proficiencies
+	// TODO: Do equipment proficiencies
+	
+	
+	public static boolean isMoving;
 	
 	// Texture
 	private Texture texture;
@@ -32,20 +57,44 @@ public class GameCharacter extends GameObject implements GLEventListener {
 	// top, bottom, left and right coordinates.
 	private float textureTop, textureBottom, textureLeft, textureRight;
 	
-	public GameCharacter (String _firstName, String _lastName, float _posX, float _posY, float _posZ) {
-		this.name = _firstName + " " + _lastName;
-		this.posX = _posX;
-		this.posY = _posY;
-		this.posZ = _posZ;
+	public GameCharacter () {
+
 	}
 	
-	public void move (Dimension where) {}
-	public void attack (Character attacked) {}
-
+	public GameCharacter (String _firstName, String _lastName) {
+		this.name = _firstName + " " + _lastName;
+		currPos = new float [3];
+		currPos[0] = (float)(5+Math.random()*10);
+		currPos[1] = -13.0f;
+		currPos[2] = -(float)(5+Math.random()*10);
+	}
+	
+	
+	public void move (float[] where) {
+		destPos[0] = where[0];
+		destPos[1] = where[1];
+		destPos[2] = where[2];
+		
+		if (isMoving) {
+			currPos[0] += destPos[0];
+		}
+	}
+	
+	
+	public void attack (Character attacked) {
+		// if (this.pos - attacked.pos) < 5
+		//	this.animate(attack);
+		//   if (tryHit)
+		//    attacked.animate(hit);
+		//	  attacked.damage();
+		// else 
+		//  move();
+	}
+	
 	public boolean addItem (GameItem added) { return true;}
 	public boolean removeItem (GameItem removed) { return true;}
 	public boolean useItem (GameItem used) {return true;}
-
+	
 	@Override
 	public void display(GLAutoDrawable drawable) {
 		System.out.println("GC_Disp_BEGIN");
@@ -55,7 +104,7 @@ public class GameCharacter extends GameObject implements GLEventListener {
 		// ------ Render a Cube with texture ------
 
 	    gl.glLoadIdentity();  // reset the model-view matrix
-		gl.glTranslatef(0.0f, 0.0f, -5.0f); // translate into the screen
+		gl.glTranslatef(currPos[0], currPos[1], currPos[2]); // translate into the screen
 		
 		gl.glEnable(GL_BLEND);
 		gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -71,13 +120,13 @@ public class GameCharacter extends GameObject implements GLEventListener {
 		gl.glBegin(GL_QUADS);
 
 		gl.glTexCoord2f(textureLeft, textureBottom);
-		gl.glVertex3f(-0.5f, -1.0f, 0.0f); // bottom-left of the texture and quad
+		gl.glVertex3f(-1.0f, -2.0f, -35.0f); // bottom-left of the texture and quad
 		gl.glTexCoord2f(textureRight, textureBottom);
-		gl.glVertex3f(0.5f, -1.0f, 0.0f);  // bottom-right of the texture and quad
+		gl.glVertex3f(1.0f, -2.0f, -35.0f);  // bottom-right of the texture and quad
 		gl.glTexCoord2f(textureRight, textureTop);
-		gl.glVertex3f(0.5f, 1.0f, 0.0f);   // top-right of the texture and quad
+		gl.glVertex3f(1.0f, 2.0f, -35.0f);   // top-right of the texture and quad
 		gl.glTexCoord2f(textureLeft, textureTop);
-		gl.glVertex3f(-0.5f, 1.0f, 0.0f);  // top-left of the texture and quad
+		gl.glVertex3f(-1.0f, 2.0f, -35.0f);  // top-left of the texture and quad
 		gl.glEnd();
 		gl.glDisable(GL_ALPHA_TEST);
 		

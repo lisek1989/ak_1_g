@@ -144,7 +144,7 @@ public class GameMain extends GLCanvas implements GLEventListener {
 		   // Setup perspective projection, with aspect ratio matches viewport
 		   gl.glMatrixMode(GL_PROJECTION);  // choose projection matrix
 		   gl.glLoadIdentity();             // reset projection matrix
-		   glu.gluPerspective(45.0, aspect, 0.1, 100.0); // fov, aspect, zNear, zFar
+		   glu.gluPerspective(45.0, aspect, 0.1, 1000.0); // fov, aspect, zNear, zFar
 	 
 		   // Enable the model-view transform
 		   gl.glMatrixMode(GL_MODELVIEW);
@@ -159,7 +159,7 @@ public class GameMain extends GLCanvas implements GLEventListener {
 	   public void display(GLAutoDrawable drawable) {
 		   System.out.println("GM_Disp_BEGIN");
 		   GL2 gl = drawable.getGL().getGL2();  // get the OpenGL 2 graphics context
-		   gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color and depth buffers  
+		   gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear color and depth buffers
 		   System.out.println("GM_Disp_END");
 	   }
 	 
