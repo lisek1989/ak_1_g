@@ -1,0 +1,26 @@
+### 
+Buttons:
+	Change interface to scene-view;
+	Change interface to area-view;
+	Change interface to region-view;
+	Change interface to avatar-view;
+	
+	Scene interface:
+		Skill slots + skills (skill set scrolling?)
+		Formation HUD
+			Group state (morale, alive, dead, captured, current formation)
+			Group formation changes ?
+	
+	Area interface:
+		TODO: area interface definition
+	Region interface:
+		TODO: region interface difinition
+	Avatar interface:
+		Stats:
+		
+		Group:
+		
+		Inventory:
+		
+	Realm interface:
+		BIG TODO
